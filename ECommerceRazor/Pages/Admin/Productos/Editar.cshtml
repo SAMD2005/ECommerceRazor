@@ -1,0 +1,120 @@
+﻿@page
+@model ECommerceRazor.Pages.Admin.Productos.EditarModel
+@{
+    ViewData["Title"] = "Editar Producto";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h4><i class="fade fa-plus-circle"></i>Editar Producto</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+
+                <!-- Enviar Id del producto como campo oculto-->
+                <input type="hidden" asp-for="Producto.Id" />
+
+                <!-- Validation Summary -->
+                <div asp-validation-summary="All" class="alert alert-danger d-none" id="validation-summary"></div>
+                <!--Campo: Nombre -->
+                <div class="mb-3">
+                    <label asp-for="Producto.Nombre" class="form-label"></label>
+                    <div class=" input-group">
+                        <span class=" input-group-text"><i class="fa-solid fa-bolt"></i></span>
+                        <input asp-for="Producto.Nombre" class="form-control" placeholder="Ingresa el nombre de producto" />
+                    </div>
+                    <span asp-validation-for="Producto.Nombre" class="text-danger"></span>
+                </div>
+
+                <!-- Campo: Descripcion -->
+                <div class="mb-3">
+                    <label asp-for="Producto.Descripcion" class="form-label"></label>
+                    <div class=" input-group">
+                        <span class=" input-group-text"><i class="fa fa-tag"></i></span>
+                        <input asp-for="Producto.Descripcion" class="form-control" placeholder="Ingresa la descripcion" />
+                    </div>
+                    <span asp-validation-for="Producto.Descripcion" class="text-danger"></span>
+                </div>
+
+                <!--Campo: Imagen -->
+                <div class="mb-3">
+                    <label asp-for="Producto.Imagen" class="form-label"></label>
+
+                    <div>
+                    <!-- Vista previa de la imagen actual -->
+                     @if(!string.IsNullOrEmpty(Model.Producto.Imagen))
+                        {
+                            <div class="mb-3">
+                                <img src="~/productos/@Model.Producto.Imagen" alt="@Model.Producto.Nombre" class="img-thumbnail" style="max-width: 200px"/>
+                            </div>
+                        }
+                    </div>
+                    <div class=" input-group">
+                        <span class=" input-group-text"><i class="fa-solid fa-image"></i></span>
+                        <input type="file" asp-for="Producto.ImagenSubida" class="form-control" placeholder="Ingresa la imagen" />
+                    </div>
+                    <span asp-validation-for="Producto.ImagenSubida" class="text-danger"></span>
+                </div>
+
+
+                <!--Campo: Precio -->
+                <div class="mb-3">
+                    <label asp-for="Producto.Precio" class="form-label"></label>
+                    <div class=" input-group">
+                        <span class=" input-group-text"><i class="fa-solid fa-dollar-sign"></i></span>
+                        <input asp-for="Producto.Precio" class="form-control" type="number" placeholder="Ingresa el Precio" />
+                    </div>
+                    <span asp-validation-for="Producto.Precio" class="text-danger"></span>
+                </div>
+
+                <!--Campo: Cantidad Disponible -->
+                <div class="mb-3">
+                    <label asp-for="Producto.CantidadDisponible" class="form-label"></label>
+                    <div class=" input-group">
+                        <span class=" input-group-text"><i class="fa-solid fa-list-ol"></i></span>
+                        <input asp-for="Producto.CantidadDisponible" class="form-control" placeholder="Ingresa la cantidad disponible" />
+                    </div>
+                    <span asp-validation-for="Producto.CantidadDisponible" class="text-danger"></span>
+                </div>
+
+                <!--Campo: Categoría -->
+                <div class="mb-3">
+                    <label asp-for="Producto.CategoriaId" class="form-label"></label>
+                    <div class=" input-group">
+                        <span class=" input-group-text"><i class="fa-solid fa-table-list"></i></span>
+                        <select asp-for="Producto.CategoriaId" asp-items="Model.Categorias" class="form-control">
+                            <option value="">Seleccione una Categoria</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="Producto.CategoriaId" value="1" class="text-danger"></span>
+                </div>
+
+                <!-- Botones -->
+                <div class="d-flex justify-content-between">
+                    <a asp-page="Index" class="btn btn-secundary">
+                        <i class="fa fa-arrow-left"></i> Regresar
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fade fa-save"></i> Editar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+            const validationSummary = document.getElementById("validation-summary");
+
+            //Mostrar el contenedor solo si tiene errores
+            if(validationSummary.innerHTML.trim() !== ""){
+                validationSummary.classList.remove("d-none");
+            }
+        })
+    </script>
+}

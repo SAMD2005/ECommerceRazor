@@ -1,0 +1,56 @@
+﻿@page
+@model ECommerceRazor.Pages.Admin.Ordenes.IndexModel
+@{
+    ViewData["Title"] = "Lista de Ordenes";
+}
+
+<div class="container mt-4">
+    @if(Model.Ordenes != null && Model.Ordenes.Any())
+    {
+        <table id="ordenesTable" class="table table-striped table-bordered">
+            <thead class=" table-dark">
+                <tr>
+                    <th>Id Orden</th>
+                    <th>Usuario</th>
+                    <th>Telefono</th>
+                    <th>Direccion de envio</th>
+                    <th>Estado</th>
+                    <th>Total</th>
+                    <th>Instrucciones</th>     
+                    <th>Fecha de Orden</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ordenes in Model.Ordenes)
+                {
+                    <tr>
+                        <td>@ordenes.Id</td>
+                        <td>@ordenes.NombreUsuario</td>
+                        <td>@ordenes.Telefono</td>
+                        <td>@ordenes.Direccion</td>
+                        <td>@ordenes.Estado</td>
+                        <td>$@ordenes.TotalOrden</td>
+                        <td>@ordenes.InstruccionesAdicionales</td>
+                        <td>@ordenes.FechaOrden.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <a asp-page="DetalleOrden" asp-route-id="@ordenes.Id" class="btn btn-sm btn-info">
+                                <i class="fa-solid fa-circle-info"></i> Detalle
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No hay ordenes registradas aun 
+        </div>
+    }
+</div>
+
+@section Scripts{
+    <script src="~/js/ordenesTable.js"></script>
+}

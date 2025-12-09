@@ -1,0 +1,44 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Nuestra tienda</h1>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        @foreach (var producto in Model.Productos)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-lg border-0 rounded-3">
+                    <!-- Imagen del producto -->
+                   <div class="card-img-top-wrapper" style="height: 200px; overflow: hidden; border-radius: 8px 8px 0;">
+                        <img src="@Url.Content($"~/productos/{producto.Imagen}")"
+                             alt="@producto.Nombre"
+                             class="card-img-top w-100 h-100"
+                             style="object-fit: cover;" />
+                   </div>
+
+                    <div class="card-body d-flex flex-column">
+                        <!-- Titulo del producto -->
+                        <h5 class="card-title text-center text-truncate"title="@producto.Nombre" style="margin-bottom: 1rem; font-size: 1.2rem; letter-spacing: 0.5px;">@producto.Nombre</h5>
+                        <!-- Informacion breve -->
+                       <p class="card-text text-secondary" style="font-size: 0.95rem; line-height: 1.5;">
+                           <strong>Precio:</strong> $ @producto.Precio<br />
+                           <strong>Categoria:</strong> @producto.Categoria.Nombre<br />
+                       </p>
+
+                        <!-- Boton de detalle -->
+                        <a asp-page="/Cliente/Inicio/Detalle"
+                        asp-route-id="@producto.Id"
+                        class="btn btn-outline-dark mt-auto w-100 text-uppercase fw-bold d-flex align-items-center justify-content-center gap-2"
+                        style="font-size: 0.9rem; padding: 0.6rem 1rem; transition: all 0.3s ease">
+                        <i class="fa-solid fa-eye"></i>Ver Detalle
+                    </a>
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,33 @@
+﻿@page
+@model ECommerceRazor.Pages.Admin.Categorias.DetalleModel
+@{
+    ViewData["Title"] = "Detalle categoria";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h4> Detalle de Categoria</h4>
+        </div>
+        <div class="card-body">
+          <dl class="row">
+              <dt class="col-sm-3">ID</dt>
+              <dd class="col-sm-9">@Model.Categoria.Id</dd>
+
+                <dt class="col-sm-3">Nombre</dt>
+                <dd class="col-sm-9">@Model.Categoria.Nombre</dd>
+
+                <dt class="col-sm-3">Orden de Visualizacion</dt>
+                <dd class="col-sm-9">@Model.Categoria.OrdenVisualizacion</dd>
+
+                <dt class="col-sm-3">Fecha de Creacion</dt>
+                <dd class="col-sm-9">@Model.Categoria.FechaCreacion.ToString("dd/MM/yyyy")</dd>
+          </dl>
+        </div>
+        <div class="card-footer text-end">
+                <a asp-page="Index" class="btn btn-secundary">
+                    <i class="fa fa-arrow-left"></i> Regresar
+                </a>
+        </div>       
+    </div>
+</div>

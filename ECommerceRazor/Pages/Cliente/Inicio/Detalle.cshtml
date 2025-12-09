@@ -1,0 +1,55 @@
+﻿@page
+@using System.Web
+@model ECommerceRazor.Pages.Cliente.Inicio.DetalleModel
+@{
+}
+
+<div class="container mt-5">
+    <form method="post">
+
+    <input type="hidden" asp-for="CarritoCompra.ProductoId" />
+    <input type="hidden" asp-for="CarritoCompra.ApplicationUserId" />
+
+    <div class="row bg-dark text-white p-4 rounded">
+        <!-- Imagen del producto-->
+        <div class="col-md-6">
+            <img src="@Url.Content($"~/productos/{Model.CarritoCompra.Producto.Imagen}")"
+                 class="img-fluid rounded shadow w-100 h-100"
+                 alt="@Model.CarritoCompra.Producto.Nombre">
+        </div>
+
+        <!-- Detalles de producto -->
+        <div class="col-md-6">
+            <h1 class="display-5">@Model.CarritoCompra.Producto.Nombre</h1>
+            <p class="text-muted"><strong><i class="fa-solid fa-tags"></i> Categoria:</strong> @Model.CarritoCompra.Producto.Categoria.Nombre</p>
+            <p class="text-muted"><strong><i class="fa-solid fa-dollar-sign"></i> Precio:</strong> $@Model.CarritoCompra.Producto.Precio</p>
+                @{
+                    var textoPlanoDescripcion = System.Text.RegularExpressions.Regex.Replace(Model.CarritoCompra.Producto.Descripcion, "<.*?>", string.Empty);
+                }
+                <p><i class="fa-solid fa-circle-info"></i> @textoPlanoDescripcion</p>
+            <p><strong><i class="fa-solid fa-boxes-stacked"></i> Cantidad disponible:</strong> @Model.CarritoCompra.Producto.CantidadDisponible</p>
+
+            <!-- Formulario para cantidad -->           
+                <div class="mb-3">
+                    <label for="Cantidad" class="form-label">Cantidad</label>
+                    <input type="number" id="Cantidad" asp-for="CarritoCompra.Cantidad"
+                        class="form-control bg-dark text-white border-secondary"
+                           min="1" 
+                        value="1" />
+                    <span asp-validation-for="CarritoCompra.Cantidad" class="text-danger"></span>
+                </div>
+
+                <!-- Botones -->
+                <div class="d-flex gap-2">
+                  <a asp-page="/Cliente/Inicio/Index" class="btn btn-success w-50"><i class="fa-solid fa-arrow-left"></i> Regresar</a>
+                  <button type="submit" class="btn btn-light text-dark w-50"><i class="fa-solid fa-cart-shopping"></i>Agregar al Carrito</button>
+                </div>            
+        </div>
+    </div>
+    </form>
+</div>
+<br />
+<br />
+<br />
+<br />
+<br />

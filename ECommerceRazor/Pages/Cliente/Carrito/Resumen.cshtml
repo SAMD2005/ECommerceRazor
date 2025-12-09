@@ -1,0 +1,119 @@
+﻿@page
+@model ECommerceRazor.Pages.Cliente.Carrito.ResumenModel
+@inject IOptions<ECommerce.Utility.ConfiguracionStripe> Stripe
+@using Microsoft.Extensions.Options
+@{
+}
+<form method="post">
+    <br />
+    <div class="backgroundWhiteBorder">
+        <div class="container">
+            <div class="card">
+                <!-- Header -->
+                <div class="card-header bg-dark text-light">
+                    <div class="row">
+                        <div class="col-6 pt-2">
+                            <h3 class="text-white-50">Resumen de Compra</h3>
+                        </div>
+                        <div class="col-6 text-end">
+                            <a asp-page="Index" class="btn btn-outline-info btn-sm">Volver al Carrito</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <div class="card-body">
+                    <div class="container rounded p-2">
+                        <div class="row">
+                            <!-- Información de Envío -->
+                            <div class="col-12 col-lg-6 pb-4">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-info">Información de Envío:</span>
+                                </h4>
+                                <div class="row my-1">
+                                    <div class="col-5">
+                                        <label>Nombre Completo</label>
+                                    </div>
+                                    <div class="col-7">
+                                        <input asp-for="Orden.NombreUsuario" class="form-control" readonly  />
+                                        <span asp-validation-for="Orden.NombreUsuario" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-5">
+                                        <label>Teléfono</label>
+                                    </div>
+                                    <div class="col-7">
+                                        <input asp-for="Orden.Telefono" type="tel" class="form-control" readonly  />
+                                        <span asp-validation-for="Orden.Telefono" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-5">
+                                        <label>Dirección</label>
+                                    </div>
+                                    <div class="col-7">
+                                        <textarea data-no-tinymce="true" asp-for="Orden.Direccion" class="form-control" style="height: 100px;" readonly ></textarea>
+                                        <span asp-validation-for="Orden.Direccion" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-5">
+                                        <label>Instrucciones Adicionales</label>
+                                    </div>
+                                    <div class="col-7">
+                                        <textarea data-no-tinymce="true" asp-for="Orden.InstruccionesAdicionales" class="form-control" style="height: 80px;" placeholder="Ingresa el mensaje que desees."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Resumen del Pedido -->
+                            <div class="col-12 col-lg-5 offset-lg-1">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-info">Detalles del Pedido:</span>
+                                </h4>
+                                <ul class="list-group mb-3">
+                                    <!-- Producto -->
+                                     @foreach(var detalle in Model.ListaCarritoCompra){
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="my-0">Producto: @detalle.Producto.Nombre</h6>
+                                            <small class="text-muted">Cantidad: @detalle.Cantidad</small>
+                                        </div>
+                                        <span class="text-muted">$ @(detalle.Producto.Precio * detalle.Cantidad)</span>
+                                    </li>
+                                    }
+                                   
+
+                                    <!-- Total -->
+                                    <li class="list-group-item d-flex justify-content-between bg-light">
+                                        <small class="text-info">Total (USD)</small>
+                                        <strong class="text-info">$ @Model.Orden.TotalOrden</strong>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-12 text-end">
+                            <button type="submit" id="btnComprar" class="btn btn-secondary btn-lg px-4">
+                              <i class="fa-solid fa-credit-card"></i> Confirmar y Comprar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    @{
+        <script src="https://js.stripe.com/clover/stripe.js"></script>
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

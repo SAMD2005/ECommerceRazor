@@ -1,0 +1,188 @@
+﻿@using Microsoft.AspNetCore.Http
+@using ECommerce.Utility
+@inject IHttpContextAccessor HttpContextAccesor
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ECommerceRazor</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel=" stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link rel=" stylesheet" href="https://cdn.jsdelivr.net./npm/sweetalert2@11/dist/sweetalert2.min.css" />    
+    <!-- Agregar Toastr CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" />
+
+    <!-- Place the first <script> tag in your HTML's <head> -->
+    <script src="https://cdn.tiny.cloud/1/9rxcjft0w888b6otzd5zqp60xcna3vk7yvr7si4wlgz8th0e/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+
+    <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+    <script>
+        tinymce.init({
+          selector: 'textarea:not([data-no-tinymce])',
+          plugins: [
+            // Core editing features
+            'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+            // Your account includes a free trial of TinyMCE premium features
+            // Try the most popular premium features until Nov 12, 2025:
+            'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'advtemplate', 'ai', 'uploadcare', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown','importword', 'exportword', 'exportpdf'
+          ],
+          toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography uploadcare | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+          tinycomments_mode: 'embedded',
+          tinycomments_author: 'Author name',
+          mergetags_list: [
+            { value: 'First.Name', title: 'First Name' },
+            { value: 'Email', title: 'Email' },
+          ],
+          ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+          uploadcare_public_key: 'd33a8482b835181078e6',
+        });
+    </script>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ECommerceRazor.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark box-shadow">
+            <div class="container">
+                <img src="~/img/logo.png" class="img-fluid" width="40" /> &nbsp;
+                <a class="navbar-brand" asp-area="" asp-page="/Index">RazCommerce</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-page="/Index">Inicio</a>
+                        </li>
+                        <!-- Menu Desplegable "Admin" -->
+                        @if (User.Identity.IsAuthenticated)
+                    {
+                            <!-- Opciones para el administrador-->
+                            @if (User.IsInRole("Administrador"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-white" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Administracion
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="adminDropdown">
+                                        <li>
+                                            <a class="dropdown-item text-white" asp-area="" asp-page="/Admin/Categorias/Index">Categorias</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-white" asp-area="" asp-page="/Admin/Productos/Index">Productos</a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-page="/Admin/Ordenes/Index">Manejo de Ordenes</a>
+                                </li>
+                            }
+                            <!--Opciones para el cliente -->
+                           
+                                @if (HttpContextAccesor.HttpContext.Session.GetInt32(CNT.CarritoSession) != null)
+                                {
+                                    <!--Carrito de Compra-->
+                                    <li class="nav-item position-relative pt-2">
+                                        <a class="nav-link text-white position-relative" asp-area="" asp-page="/Cliente/Carrito/Index">
+                                            <i class="fa-solid fa-cart-shopping fa-lg"></i> 
+                                           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            (@HttpContextAccesor.HttpContext.Session.GetInt32(CNT.CarritoSession))
+                                           </span>
+                                        </a>
+                                    </li>
+                                }
+                              
+                    }
+                    else
+                    {
+                            <!--Carrito de Compra-->
+                            <li class="nav-item position-relative pt-2">
+                                <a class="nav-link text-white position-relative" asp-area="" asp-page="/Cliente/Carrito/Index">
+                                    <i class="fa-solid fa-cart-shopping fa-lg"></i>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                      &nbsp;(0)  
+                                    </span>
+                                </a>
+                            </li>                           
+                    }
+
+                    </ul>
+
+                    <!-- LoginPartial alineado a la derecha -->
+                    <div class="navbar-nav ms-auto">
+                        <partial name="_LoginPartial" />
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <!--Header -->
+        @{
+            var rutaActual = ViewContext.HttpContext.Request.Path;
+        }
+        @if(rutaActual == "/Cliente/Inicio/Index")
+        {
+            <div class="w-100">
+                <img src="~/img/header.png" class="img-fluid" alt="Encabezado" />
+            </div>
+        }
+
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!--Banner -->
+    @if (rutaActual == "/Cliente/Inicio/Index")
+    {
+        <div class="w-100">
+            <img src="~/img/banner.png" class="img-fluid" alt="Encabezado" />
+        </div>
+    }  
+
+    <footer class="bg-dark text-light py-3">
+        <div class="container text-center">
+            &copy; 2025 - RazCommerce - <a asp-area="" asp-page="/Privacy">Privacidad</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net./npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <!-- DataTable JS -->
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Mostrar Mensajes toastr desde TempData -->
+
+    <script>
+      $(document).ready(function(){
+          //Si hay un mensaje en TempData
+            var successMessage ='@TempData["Success"]';
+            var errorMessage ='@TempData["Error"]';
+
+          //Mostrar toastr segun el tipo de mensaje
+            if(successMessage){
+                toastr.success(successMessage)
+          }
+
+              if(errorMessage){
+                toastr.error(errorMessage)
+          }
+      });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

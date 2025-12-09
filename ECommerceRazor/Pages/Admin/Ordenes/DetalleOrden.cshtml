@@ -1,0 +1,140 @@
+﻿@page "{id:int}"
+@model ECommerceRazor.Pages.Admin.Ordenes.DetalleOrdenModel
+@{
+    ViewData["Title"] = "Detalle de la orden";
+}
+
+<h1 class="mt-4">Detalle de la Orden @Model.Orden.Id</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Informacion de la Orden</h5>
+                    <p><strong>Id Orden: </strong>@Model.Orden.Id</p>
+                    <p><strong>Usuario: </strong>@Model.Orden.NombreUsuario</p>
+                    <p><strong>Telefono: </strong>@Model.Orden.Telefono</p>
+                    <p><strong>Direccion de Envio: </strong>@Model.Orden.Direccion</p>
+                    <p><strong>Estado: </strong>@Model.Orden.Estado</p>
+                    <p><strong>Total Orden: </strong>@Model.Orden.TotalOrden</p>
+                    <p><strong>Fecha: </strong>@Model.Orden.FechaOrden</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Detalle de los productos</h5>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Totales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var detalle in Model.DetallesOrden)
+                            {         
+                                <tr>                                   
+                                     <td>@detalle.Producto.Nombre</td>
+                                     <td>@detalle.Cantidad</td>
+                                     <td>@detalle.Precio.ToString("C")</td>
+                                     <td>
+                                          @(detalle.Cantidad * detalle.Precio)
+                                     </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="mb-4">
+               <div>
+                   <label for="estadoSelect" class="form-label"><strong>Cambiar Estado:</strong></label>
+                   <div class="input-group">
+                        @if (Model.Orden.Estado == "Estado_Completado" 
+                        ||    Model.Orden.Estado == "Estado_Cancelado" 
+                        ||    Model.Orden.Estado == "Estado_Reembolsado")
+                        {
+                            <p class="tetx-muted mt-2"><strong>Estado Final:</strong>> @Model.Orden.Estado.Replace("_", " ")</p>
+                        }else
+                        {
+                            <select id="estadoSelect" class="form-select">
+                                <option value="Seleccione un Estado"></option>
+                                @foreach(var estado in Model.EstadosDisponibles)
+                                {
+                                    <option value="@estado">@estado.Replace("_", " ")</option>
+                                }
+                            </select>
+                            <br />
+                            <button class="btn btn-primary" id="btnActualizarEstado" onclick="actualizarEstado(@Model.Orden.Id)">Actualizar Estado</button>
+                        }
+                    </div>
+               </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+   <script>
+       function actualizarEstado(ordenId){
+           const estadoSelect = document.getElementById("estadoSelect");
+           const estado = estadoSelect.value;
+
+           const btnActualizar = document.getElementById("btnActualizarEstado");
+
+          if(!estado) {
+              Swal.fire({
+                  title: "Estado no valido",
+                  text: "Por favor seleccione un estado valido.",
+                  icon: "warning",
+                  confirmButtonText: "Entendido"
+              });
+              return;
+          }
+
+          const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+          $.post(`?handler=ActualizarEstado`,
+           { id: ordenId, nuevoEstado: estado, __RequestVerificationToken: token },
+           function(response){
+               if(response.success){
+                   // alert (response.message);
+
+                   Swal.fire({
+                       title: "¡Exito!",
+                       text: response.message, // El mensaje enviado desde tu controlador 
+                       icon: "success",
+                       confirmButtonText: "OK"
+                   }).then(() => {
+                       //Opcional: Recargar la pagina despues de cerrar el SweetAlert
+                       location.reload();
+                   });
+
+                   estadoSelect.disabled = true;
+                   btnActualizar.disabled = true;
+                   const estadoFinal = document.createElement("p");
+                   estadoFinal.className = "text-muted mt-2";
+                   estadoFinal.innerHTML = `<strong>Estado final:</strong> ${estado.replace("_", " ")}`
+                   estadoSelect.parentElement.appendChild(estadoFinal);
+
+                   //recargar la pagina
+                   //location.reload();
+               }else{
+                   //alert("Error: " + response.message);
+                   Swal.fire({
+                       title: "Error",
+                       text: response.message || "Hubo un problema al actualizar el estado.",
+                       icon: "error",
+                       confirmButtonText: "OK"
+                   });
+               }
+           }).fail(function(){
+               alert("Hubo un error al intentar actualizar el estado.");
+           });
+       }
+   </script>
+} 
